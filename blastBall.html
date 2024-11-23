@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chase the Ball</title>
+    <link rel="icon" type="image/png" href="https://plus.unsplash.com/premium_photo-1669648902412-00e85019ed33?q=80&w=1615&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D">
+    <style>
+        /* General Styling */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .game-container {
+            position: relative;
+            width: 90%;
+            max-width: 600px;
+            height: 400px;
+            margin: 20px auto;
+            border: 2px solid #333;
+            border-radius: 10px;
+            overflow: hidden;
+            background-color: #f9f9f9;
+        }
+
+        .target {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background-color: #ff5722;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .scoreboard {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 1.2rem;
+        }
+
+        .back-btn {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            text-align: center;
+            background-color: #007bff;
+            color: white;
+            font-size: 1rem;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .game-container {
+                height: 300px;
+            }
+
+            .target {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+    <script>
+        // Disable browser's default scroll restoration
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+
+        window.onload = function () {
+            window.scrollTo(0, 0);
+
+            // Game Logic
+            const gameContainer = document.querySelector('.game-container');
+            const target = document.querySelector('.target');
+            const scoreElement = document.querySelector('.scoreboard span');
+            const backButton = document.querySelector('.back-btn');
+            let score = 0;
+            let timeoutId;
+
+            // Move the target to a random position
+            function moveTarget() {
+                const containerRect = gameContainer.getBoundingClientRect();
+                const maxX = containerRect.width - target.offsetWidth;
+                const maxY = containerRect.height - target.offsetHeight;
+
+                const randomX = Math.floor(Math.random() * maxX);
+                const randomY = Math.floor(Math.random() * maxY);
+
+                target.style.left = `${randomX}px`;
+                target.style.top = `${randomY}px`;
+            }
+
+            // Start a timer to move the target automatically after 1 second
+            function startAutoMoveTimer() {
+                clearTimeout(timeoutId);
+                timeoutId = setTimeout(() => {
+                    moveTarget();
+                    startAutoMoveTimer();
+                }, 1000);
+            }
+
+            // Update score on click
+            target.addEventListener('click', () => {
+                score++;
+                scoreElement.textContent = score;
+                moveTarget();
+                startAutoMoveTimer(); // Reset the auto-move timer
+            });
+
+            // Back to home functionality (reset the game)
+            backButton.addEventListener('click', () => {
+                score = 0;
+                scoreElement.textContent = score;
+                moveTarget();
+                startAutoMoveTimer();
+            });
+
+            // Initial setup
+            moveTarget();
+            startAutoMoveTimer();
+        };
+    </script>
+</head>
+<body>
+    <h1>Chase the Ball</h1>
+    <div class="game-container">
+        <div class="target"></div>
+    </div>
+    <div class="scoreboard">Score: <span>0</span></div>
+    <a class="back-btn" href="gamesList.html">Back To Game Collection</a>
+</body>
+</html>
